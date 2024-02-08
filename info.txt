@@ -1,0 +1,106 @@
+Axios is use to fetch data from API. By using axios we get data by default in JSON format.
+
+=================================================
+App.js
+=================================================
+import { useEffect, useState } from 'react'
+import './App.css'
+// import axios from '.axios' // import axios from axios module library
+import axios from './axios' // import axios from axios file when we have create in project and there we have use API link
+
+function App() {
+  const [apiData, setApiData] = useState([]) // loop response data and store this from API - [] data in array format
+  const [isError, setIsError] = useState('') // loop error message and store this from API - '' empty array
+
+  // NOTE: axios Using Promises
+  useEffect(() => {
+    axios
+      .get('https://jsonplaceholder.typicode.com/posts') // read data from API
+      .then((res) => setApiData(res.data)) // using promises(.then) get data from API
+      .catch((error) => setIsError(error.message)) //Error handling using  catch
+  }, [])
+
+  // NOTE: Using async await
+  // define getApiData function
+  const getApiData = async () => {
+    try {                               // try and catch for error handling
+      const res = await axios.get('/posts') // read data
+      setApiData(res.data) // get data
+    } catch (error) {
+      setIsError(error.message)  // Error message
+    }
+  }
+  useEffect(() => {
+    getApiData() // calll getApiData function
+  }, [])
+
+  return (
+    <>
+      <h1>Axios Tutorial</h1>
+      {setIsError !== '' && <h2>{isError}</h2>}  // show errror when error is not null
+      <div className="grid">
+        {apiData.slice(0, 12).map((post) => {   // call data from useState
+          const { id, title, body } = post      // data type
+          return (
+            <div className="card" key={id}>
+            <h2>{ title.slice(0, 15).toUpperCase() } < /h2> // How much number of word we waant to display.
+              // we use slice method.
+              <p>{body.slice(0, 100)}</p>
+            </div>
+          )
+        })}
+      </div>
+    </>
+  )
+}
+
+export default App
+
+=================================================
+Axios.js
+=================================================
+import axios from "axios";  // import axios from axios module library
+
+// we need to pass the baseURL as an object
+const API = axios.create({
+  baseURL: "https://jsonplaceholder.typicode.com",
+});
+
+export default API;
+
+=================================================
+App.css
+=================================================
+.grid {
+  max-width: 120rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.6rem;
+}
+.card {
+  padding: 2em;
+  border: 1px solid #888;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
